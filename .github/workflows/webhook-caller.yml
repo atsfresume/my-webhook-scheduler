@@ -1,0 +1,15 @@
+name: Secure Scheduled Webhook Caller
+
+on:
+  schedule:
+    - cron: '0 14,18,23 * * *'
+  
+  workflow_dispatch:
+
+jobs:
+  call_webhook:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Call The Secure Webhook URL
+        run: curl -sf "${{ secrets.WEBHOOK_URL }}"
