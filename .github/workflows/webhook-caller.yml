@@ -5,6 +5,7 @@ on:
     - cron: '0 14,18,23 * * *'
 
   
+  
   workflow_dispatch:
 
 jobs:
@@ -14,7 +15,21 @@ jobs:
     steps:
       - name: Call The Secure Webhook URL with Random Number
         run: |
-          RANDOM_VALUE=$(( ($RANDOM % 7) + 1 ))
+          # 1. تولید یک عدد تصادفی بین 1 تا 7
+          RANDOM_NUMBER=$(( ($RANDOM % 7) + 1 ))
 
-          curl -sf "${{ secrets.WEBHOOK_URL }}${RANDOM_VALUE}"
+          # 2. خواندن URL پایه از سکرت
+          BASE_URL="${{ secrets.WEBHOOK_URL }}"
 
+          # 3. بررسی هوشمند که آیا URL از قبل پارامتر دارد یا نه
+          if [[ "$BASE_URL" == *"?"* ]]; then
+            # اگر پارامتر داشت، از & برای افزودن پارامتر جدید استفاده کن
+            FINAL_URL="${BASE_URL}&random_value=${RANDOM_NUMBER}"
+          else
+            # اگر پارامتر نداشت، از ? برای افزودن اولین پارامتر استفاده کن
+            FINAL_URL="${BASE_URL}?random_value=${RANDOM_NUMBER}"
+          fi
+
+          # 4. فراخوانی URL نهایی و کاملا صحیح
+          echo "Calling the final URL..."
+          curl -sf "${FINAL_URL}"
