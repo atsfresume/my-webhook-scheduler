@@ -1,8 +1,9 @@
-name: Secure Scheduled Webhook Caller
+name: Secure Scheduled Webhook Caller with Random Number
 
 on:
   schedule:
     - cron: '0 14,18,23 * * *'
+
   
   workflow_dispatch:
 
@@ -11,5 +12,9 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - name: Call The Secure Webhook URL
-        run: curl -sf "${{ secrets.WEBHOOK_URL }}"
+      - name: Call The Secure Webhook URL with Random Number
+        run: |
+          RANDOM_VALUE=$(( ($RANDOM % 7) + 1 ))
+
+          curl -sf "${{ secrets.WEBHOOK_URL }}${RANDOM_VALUE}"
+
